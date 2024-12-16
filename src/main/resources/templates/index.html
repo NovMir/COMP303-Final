@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Movie Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Movie Management System</h1>
+
+        <!-- Movies Count Display -->
+        <div class="alert alert-info" th:if="${movieCount != null}">
+            Total Movies: <span th:text="${movieCount}">0</span>
+        </div>
+
+        <!-- Add New Movie Button -->
+        <div class="mb-3">
+            <a href="/movie/new" class="btn btn-primary">Add New Movie</a>
+            <a href="/movie/available" class="btn btn-primary">View all movies</a>
+          
+        </div>
+
+        <!-- Movies List Table -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Movies List</h2>
+            </div>
+            <div class="card-body">
+                <div th:if="${#lists.isEmpty(movies)}" class="alert alert-warning">
+                    No movies found in the database.
+                </div>
+                
+                <table th:if="${not #lists.isEmpty(movies)}" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Movie ID</th>
+                            <th>Title</th>
+                            <th>Release Year</th>
+                            <th>Language</th>
+                            <th>Rental Price</th>
+                            <th>Rental Date</th>
+                            <th>Actions</th>
+                             <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="movie : ${movies}">
+                            <td th:text="${movie.movieId}"></td>
+                            <td th:text="${movie.movieTitle}"></td>
+                            <td th:text="${movie.releaseYear}"></td>
+                            <td th:text="${movie.language}"></td>
+                            <td th:text="${'$' + movie.rentalPrice}"></td>
+                            <td th:text="${#temporals.format(movie.rentalDate, 'yyyy-MM-dd')}"></td>
+                            <td>
+                                <a th:href="@{/movie/edit/{id}(id=${movie.movieId})}" 
+                                   class="btn btn-warning btn-sm">Edit</a>
+                                <a th:href="@{/movie/delete/{id}(id=${movie.movieId})}" 
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Are you sure you want to delete this movie?')">
+                                    Delete
+                                </a>
+                            </td>
+                            <td>
+    							<span th:if="${movie.isRented == false}" 
+       							   class="badge bg-success">Available</span>
+ 								   <span th:unless="${movie.isRented == false}" 
+     						     class="badge bg-danger">Rented</span>
+							</td>
+              
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
